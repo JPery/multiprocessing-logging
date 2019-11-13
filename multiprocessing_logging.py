@@ -10,7 +10,8 @@ import traceback
 
 try:
     from queue import Empty
-    from multiprocessing import SimpleQueue
+    from multiprocessing import Manager
+    SimpleQueue = Manager().Queue
 except ImportError:
     from Queue import Empty # Python 2.
     from multiprocessing import Queue as SimpleQueue
@@ -62,7 +63,7 @@ class MultiProcessingHandler(logging.Handler):
     def _receive(self):
         while not (self._is_closed and self.queue.empty()):
             try:
-                record = self.queue.get()
+                record =  self.queue.get()
                 self.sub_handler.emit(record)
             except (KeyboardInterrupt, SystemExit):
                 raise
